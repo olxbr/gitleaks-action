@@ -3,41 +3,33 @@
 INPUT_CONFIG_PATH="$1"
 CONFIG=""
 
-# check if a custom config have been provided
 if [ -f "$GITHUB_WORKSPACE/$INPUT_CONFIG_PATH" ]; then
   CONFIG=" --config-path=$GITHUB_WORKSPACE/$INPUT_CONFIG_PATH"
 fi
 
-echo running gitleaks "$(gitleaks --version) with the following command👇"
-
-DONATE_MSG="👋 maintaining gitleaks takes a lot of work so consider sponsoring me or donating a little something\n\e[36mhttps://github.com/sponsors/zricethezav\n\e[36mhttps://www.paypal.me/zricethezav\n"
+echo -e "\nrunning gitleaks $(gitleaks --version) ...\n"
 
 if [ "$GITHUB_EVENT_NAME" = "push" ]
 then
-  echo gitleaks --path=$GITHUB_WORKSPACE --verbose --redact $CONFIG
-  CAPTURE_OUTPUT=$(gitleaks --path=$GITHUB_WORKSPACE --verbose --redact $CONFIG)
+  OUTPUT_RESULT=[$(gitleaks --path=$GITHUB_WORKSPACE --leaks-exit-code=0 --quiet --redact $CONFIG | paste -s -d ',')]
 elif [ "$GITHUB_EVENT_NAME" = "pull_request" ]
 then 
   git --git-dir="$GITHUB_WORKSPACE/.git" log --left-right --cherry-pick --pretty=format:"%H" remotes/origin/$GITHUB_BASE_REF... > commit_list.txt
-  echo gitleaks --path=$GITHUB_WORKSPACE --verbose --redact --commits-file=commit_list.txt $CONFIG
-  CAPTURE_OUTPUT=$(gitleaks --path=$GITHUB_WORKSPACE --verbose --redact --commits-file=commit_list.txt $CONFIG)
+  OUTPUT_RESULT=[$(gitleaks --path=$GITHUB_WORKSPACE --leaks-exit-code=0 --quiet --redact --commits-file=commit_list.txt $CONFIG | paste -s -d ',')]
 fi
 
-if [ $? -eq 1 ]
+if [ "$OUTPUT_RESULT" != "[]" ]
 then
-  GITLEAKS_RESULT=$(echo -e "\e[31m🛑 STOP! Gitleaks encountered leaks")
-  echo "$GITLEAKS_RESULT"
-  echo "::set-output name=exitcode::$GITLEAKS_RESULT"
-  echo "----------------------------------"
-  echo "$CAPTURE_OUTPUT"
-  echo "::set-output name=result::$CAPTURE_OUTPUT"
-  echo "----------------------------------"
-  echo -e $DONATE_MSG
-  exit 1
+  GITLEAKS_RESULT=$(echo -e "\e[31mGitleaks encountered leaks:")
+  EXITCODE=1
 else
-  GITLEAKS_RESULT=$(echo -e "\e[32m✅ SUCCESS! Your code is good to go!")
-  echo "$GITLEAKS_RESULT"
-  echo "::set-output name=exitcode::$GITLEAKS_RESULT"
-  echo "------------------------------------"
-  echo -e $DONATE_MSG
+  GITLEAKS_RESULT=$(echo -e "\e[32mYour code is good to go!")
+  EXITCODE=0
 fi
+
+echo -e "$GITLEAKS_RESULT\n"
+echo -e "$OUTPUT_RESULT\n"
+echo -e "Maintaining gitleaks takes a lot of work so consider sponsoring it or donate:\n\e[36mhttps://github.com/sponsors/zricethezav\n\e[36mhttps://www.paypal.me/zricethezav\n"
+
+echo "::set-output name=exitcode::$EXITCODE"
+echo "::set-output name=result::$OUTPUT_RESULT"
