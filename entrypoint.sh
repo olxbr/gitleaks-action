@@ -9,6 +9,7 @@ fi
 
 echo -e "\nrunning gitleaks $(gitleaks --version) ...\n"
 
+OUTPUT_RESULT=[]
 if [ "$GITHUB_EVENT_NAME" = "push" -o "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]
 then
   OUTPUT_RESULT=[$(gitleaks --path=$GITHUB_WORKSPACE --leaks-exit-code=0 --quiet --redact $CONFIG | paste -s -d ',')]
