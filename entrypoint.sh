@@ -29,8 +29,9 @@ else
 fi
 
 echo -e "$GITLEAKS_RESULT\n"
-echo -e "$OUTPUT_RESULT\n"
-echo -e "Maintaining gitleaks takes a lot of work so consider sponsoring it or donate:\n\e[36mhttps://github.com/sponsors/zricethezav\n\e[36mhttps://www.paypal.me/zricethezav\n"
+echo $OUTPUT_RESULT | jq
+
+echo -e "\nMaintaining gitleaks takes a lot of work so consider sponsoring it or donate:\n\e[36mhttps://github.com/sponsors/zricethezav\n\e[36mhttps://www.paypal.me/zricethezav\n"
 
 echo "::set-output name=exitcode::$EXITCODE"
 echo "::set-output name=result::$OUTPUT_RESULT"
