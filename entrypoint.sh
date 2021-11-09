@@ -7,30 +7,31 @@ if [ -f "$GITHUB_WORKSPACE/$INPUT_CONFIG_PATH" ]; then
   CONFIG=" --config-path=$GITHUB_WORKSPACE/$INPUT_CONFIG_PATH"
 fi
 
-echo -e "\nrunning gitleaks $(gitleaks --version) ...\n"
+GITLEAKS_VERSION=$(curl -s https://api.github.com/repos/zricethezav/gitleaks/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")') && wget -q https://github.com/zricethezav/gitleaks/releases/download/$GITLEAKS_VERSION/gitleaks-linux-amd64
+mv gitleaks-linux-amd64 gitleaks
+chmod +x gitleaks
 
-OUTPUT_RESULT=[]
-if [ "$GITHUB_EVENT_NAME" = "push" -o "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]
-then
-  OUTPUT_RESULT=[$(gitleaks --path=$GITHUB_WORKSPACE --leaks-exit-code=0 --quiet --redact $CONFIG | paste -s -d ',')]
-elif [ "$GITHUB_EVENT_NAME" = "pull_request" ]
-then 
-  git --git-dir="$GITHUB_WORKSPACE/.git" log --left-right --cherry-pick --pretty=format:"%H" remotes/origin/$GITHUB_BASE_REF... > commit_list.txt
-  OUTPUT_RESULT=[$(gitleaks --path=$GITHUB_WORKSPACE --leaks-exit-code=0 --quiet --redact --commits-file=commit_list.txt $CONFIG | paste -s -d ',')]
+echo -e "\nrunning gitleaks $(./gitleaks --version) ...\n"
+touch gitleaks.json
+EXIT_CODE=3
+if [ "$GITHUB_EVENT_NAME" = "push" -o "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
+  GITLEAKS=$(./gitleaks --path=$GITHUB_WORKSPACE --report="gitleaks.json" --format=JSON --leaks-exit-code=2 --quiet --redact $CONFIG)
+  EXIT_CODE=$?
+elif [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+  git --git-dir="$GITHUB_WORKSPACE/.git" log --left-right --cherry-pick --pretty=format:"%H" remotes/origin/$GITHUB_BASE_REF... >commit_list.txt
+  GITLEAKS=$(./gitleaks --path=$GITHUB_WORKSPACE --report="gitleaks.json" --format=JSON --leaks-exit-code=2 --quiet --redact --commits-file=commit_list.txt $CONFIG)
+  EXIT_CODE=$?
 fi
 
-if [ "$OUTPUT_RESULT" != "[]" ]
-then
-  GITLEAKS_RESULT=$(echo -e "\e[31mGitleaks encountered leaks:")
-  EXITCODE=1
-else
-  GITLEAKS_RESULT=$(echo -e "\e[32mYour code is good to go!")
-  EXITCODE=0
-fi
+case $EXIT_CODE in
+0) echo -e "Your code is good to go!\n\n" ;;
+1) echo -e "Gitleaks execution fail!\n\n" ;;
+2) echo -e "Gitleaks encountered leaks!\n\n$(cat gitleaks.json)\n\n" ;;
+3) echo -e "Gitleaks not executed!\n\n" ;;
+*) echo -e "Exit code was $EXIT_CODE\n\n" ;;
+esac
 
-echo -e "$GITLEAKS_RESULT\n"
-echo -e "$OUTPUT_RESULT\n"
-echo -e "Maintaining gitleaks takes a lot of work so consider sponsoring it or donate:\n\e[36mhttps://github.com/sponsors/zricethezav\n\e[36mhttps://www.paypal.me/zricethezav\n"
+echo "::set-output name=exit_code::$EXIT_CODE"
+echo "::set-output name=result::$(jq -c . < gitleaks.json)"
 
-echo "::set-output name=exitcode::$EXITCODE"
-echo "::set-output name=result::$OUTPUT_RESULT"
+rm -rf gitleaks gitleaks.json

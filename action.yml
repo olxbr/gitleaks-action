@@ -1,20 +1,23 @@
 name: Gitleaks
-description: Run Gitleaks on Push and PR events
+description: Run Gitleaks
 branding:
   color: purple
   icon: eye
 inputs:
-  config-path:
-    description: 'Path to config (relative to $GITHUB_WORKSPACE)'
+  config_path:
+    description: "Path to config, relative to $GITHUB_WORKSPACE"
     required: false
-    default: '.github/.gitleaks.toml'
+    default: ".github/.gitleaks.toml"
 outputs:
-  result: # id of output
-    description: 'Gitleaks log output'
-  exitcode: # id of output
-    description: 'Success for failure value from scan'
+  result:
+    description: "Gitleaks log output"
+    value: ${{ steps.gitleaks.outputs.result }}
+  exit_code:
+    description: "Gitleaks exit code"
+    value: ${{ steps.gitleaks.outputs.exit_code }}
 runs:
-  using: "docker"
-  image: "Dockerfile"
-  args:
-    - ${{ inputs.config-path }}
+  using: "composite"
+  steps:
+    - id: gitleaks
+      run: ${{ github.action_path }}/entrypoint.sh ${{ inputs.config_path }}
+      shell: bash
