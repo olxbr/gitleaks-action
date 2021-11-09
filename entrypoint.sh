@@ -12,8 +12,10 @@ mv gitleaks-linux-amd64 gitleaks
 chmod +x gitleaks
 
 echo -e "\nrunning gitleaks $(./gitleaks --version) ...\n"
-touch gitleaks.json
+
+echo '[]' > gitleaks.json
 EXIT_CODE=3
+
 if [ "$GITHUB_EVENT_NAME" = "push" -o "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
   GITLEAKS=$(./gitleaks --path=$GITHUB_WORKSPACE --report="gitleaks.json" --format=JSON --leaks-exit-code=2 --quiet --redact $CONFIG)
   EXIT_CODE=$?
