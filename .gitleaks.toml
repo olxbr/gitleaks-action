@@ -3,6 +3,9 @@ title = "gitleaks config"
 	description = "AWS Manager ID"
 	regex = '''(A3T[A-Z0-9]|AKIA|AGPA|AIDA|AROA|AIPA|ANPA|ANVA|ASIA)[A-Z0-9]{16}'''
 	tags = ["key", "AWS"]
+	[rules.allowlist]
+		description = "Ignore temporary AWS key"
+		regexes = ['''(A3T[A-Z0-9]|ASIA)[A-Z0-9]{16}''']
 [[rules]]
 	description = "AWS Secret Key"
 	regex = '''(?i)aws(.{0,20})?(?-i)['\"][0-9a-zA-Z\/+]{40}['\"]'''
@@ -101,11 +104,6 @@ title = "gitleaks config"
 	tags = ["key", "twilio"]
 [allowlist]
 	description = "Allowlisted files"
-	files = [
-	    '''^\.?gitleaks.toml$''',
-	    '''(.*?)(jpg|gif|doc|pdf|bin)$''',
-	    '''(go.mod|go.sum)$'''
-	]
-	regexes = [
-	    '''(A3T[A-Z0-9]|ASIA)[A-Z0-9]{16}'''
-	]
+	files = ['''^\.?gitleaks.toml$''',
+	'''(.*?)(jpg|gif|doc|pdf|bin)$''',
+	'''(go.mod|go.sum)$''']
