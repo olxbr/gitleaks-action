@@ -5,9 +5,9 @@ branding:
   icon: eye
 inputs:
   config_path:
-    description: "Path to config, relative to $GITHUB_WORKSPACE"
+    description: "Path to folder containing .gitleaks.toml inside your repository"
     required: false
-    default: ".github/.gitleaks.toml"
+    default: ""
 outputs:
   result:
     description: "Gitleaks log output"
@@ -19,5 +19,13 @@ runs:
   using: "composite"
   steps:
     - id: gitleaks
-      run: ${{ github.action_path }}/entrypoint.sh ${{ inputs.config_path }}
+      run: |
+        if [ -z "${{ inputs.config_path }}" ]
+        then
+              echo -e "\n\nUSING CONFIG ${GITHUB_ACTION_PATH}/.gitleaks.toml"
+              ${GITHUB_ACTION_PATH}/entrypoint.sh ${GITHUB_ACTION_PATH}/.gitleaks.toml
+        else
+              echo -e "\n\nUSING CONFIG ${GITHUB_WORKSPACE}/${{ inputs.config_path }}/.gitleaks.toml"
+              ${GITHUB_ACTION_PATH}/entrypoint.sh ${GITHUB_WORKSPACE}/${{ inputs.config_path }}/.gitleaks.toml
+        fi
       shell: bash

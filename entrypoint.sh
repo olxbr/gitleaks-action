@@ -3,8 +3,11 @@
 INPUT_CONFIG_PATH="$1"
 CONFIG=""
 
-if [ -f "$GITHUB_WORKSPACE/$INPUT_CONFIG_PATH" ]; then
-  CONFIG=" --config-path=$GITHUB_WORKSPACE/$INPUT_CONFIG_PATH"
+if [ -f "$INPUT_CONFIG_PATH" ]; then
+  echo -e "\nFound config in $INPUT_CONFIG_PATH"
+  CONFIG=" --config-path=$INPUT_CONFIG_PATH"
+else
+  echo -e "\nConfig not found in $INPUT_CONFIG_PATH... using default"  
 fi
 
 GITLEAKS_VERSION=$(curl -s https://api.github.com/repos/zricethezav/gitleaks/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")') && wget -q https://github.com/zricethezav/gitleaks/releases/download/$GITLEAKS_VERSION/gitleaks-linux-amd64
