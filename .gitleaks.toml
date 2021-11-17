@@ -4,7 +4,7 @@ title = "gitleaks config"
 	regex = '''(A3T[A-Z0-9]|AKIA|AGPA|AIDA|AROA|AIPA|ANPA|ANVA|ASIA)[A-Z0-9]{16}'''
 	tags = ["key", "AWS"]
 	[rules.allowlist]
-		description = "Ignore temporary AWS key, example key"
+		description = "Ignore temporary AWS key"
 		regexes = ['''(A3T[A-Z0-9]|ASIA)[A-Z0-9]{16}''']
 [[rules]]
 	description = "AWS Secret Key"
