@@ -15,7 +15,7 @@ tar -xf gitleaks_8.0.0_linux_x64.tar.gz
 chmod +x gitleaks
 rm -rf gitleaks_8.0.0_linux_x64.tar.gz
 
-echo -e "\nrunning gitleaks $(./gitleaks --version) ...\n"
+echo -e "\nrunning gitleaks version $(./gitleaks version) ...\n"
 
 echo '[]' > gitleaks.json
 EXIT_CODE=3
