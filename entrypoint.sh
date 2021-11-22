@@ -10,9 +10,10 @@ else
   echo -e "\nConfig not found in $INPUT_CONFIG_PATH... using default"  
 fi
 
-GITLEAKS_VERSION=$(curl -s https://api.github.com/repos/zricethezav/gitleaks/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")') && wget -q https://github.com/zricethezav/gitleaks/releases/download/$GITLEAKS_VERSION/gitleaks-linux-amd64
-mv gitleaks-linux-amd64 gitleaks
+wget -q https://github.com/zricethezav/gitleaks/releases/download/v8.0.0/gitleaks_8.0.0_linux_x64.tar.gz
+tar -xf gitleaks_8.0.0_linux_x64.tar.gz
 chmod +x gitleaks
+rm -rf gitleaks_8.0.0_linux_x64.tar.gz
 
 echo -e "\nrunning gitleaks $(./gitleaks --version) ...\n"
 
