@@ -21,11 +21,11 @@ echo '[]' > gitleaks.json
 EXIT_CODE=3
 
 if [ "$GITHUB_EVENT_NAME" = "push" -o "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
-  GITLEAKS=$(./gitleaks --path=$GITHUB_WORKSPACE --report="gitleaks.json" --format=JSON --leaks-exit-code=2 --quiet --redact $CONFIG)
+  GITLEAKS=$(./gitleaks detect --report="gitleaks.json" --format=JSON --leaks-exit-code=2 --quiet --redact $CONFIG)
   EXIT_CODE=$?
 elif [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
   git --git-dir="$GITHUB_WORKSPACE/.git" log --left-right --cherry-pick --pretty=format:"%H" remotes/origin/$GITHUB_BASE_REF... >commit_list.txt
-  GITLEAKS=$(./gitleaks --path=$GITHUB_WORKSPACE --report="gitleaks.json" --format=JSON --leaks-exit-code=2 --quiet --redact --commits-file=commit_list.txt $CONFIG)
+  GITLEAKS=$(./gitleaks detect --report="gitleaks.json" --format=JSON --leaks-exit-code=2 --quiet --redact --commits-file=commit_list.txt $CONFIG)
   EXIT_CODE=$?
 fi
 
