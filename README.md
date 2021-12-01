@@ -6,7 +6,7 @@ A fork from [oficial Gitleaks Action](https://github.com/zricethezav/gitleaks-ac
 
 
 ### Sample Workflow
-```
+```yaml
 name: gitleaks
 
 on: [push, pull_request, workflow_dispatch]
@@ -27,7 +27,7 @@ jobs:
 ```
 
 ### Using your own .gitleaks.toml configuration
-```
+```yaml
 name: gitleaks
 
 on: [push, pull_request, workflow_dispatch]
