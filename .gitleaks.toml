@@ -1,17 +1,13 @@
-
 title = "gitleaks config"
 
 [[rules]]
-    description = "AWS Access Key"
-    regex = '''(A3T[A-Z0-9]|AKIA|AGPA|AIDA|AROA|AIPA|ANPA|ANVA|ASIA)[A-Z0-9]{16}'''
-    tags = ["key", "AWS"]
-    [rules.allowlist]
-        regexes = ['''(A3T[A-Z0-9]|ASIA)[A-Z0-9]{16}''']
-        description = "Ignore temporary keys"
+    description = "GitLab Personal Access Token"
+    regex = '''glpat-[0-9a-zA-Z\-]{20}'''
+    tags = ["key", "Gitlab"]
 
 [[rules]]
-    description = "AWS Secret Key"
-    regex = '''(?i)aws_(.{0,20})?=.[\'\"0-9a-zA-Z\/+]{40}'''
+    description = "AWS Access Key"
+    regex = '''AKIA[0-9A-Z]{16}'''
     tags = ["key", "AWS"]
 
 [[rules]]
@@ -20,60 +16,83 @@ title = "gitleaks config"
     tags = ["key", "AWS", "MWS"]
 
 [[rules]]
-    description = "Facebook Secret Key"
-    regex = '''(?i)(facebook|fb)(.{0,20})?(?-i)['\"][0-9a-f]{32}['\"]'''
+    description = "Facebook Token"
+    regex = '''(?i)(facebook[a-z0-9_ .\-,]{0,25})(=|>|:=|\|\|:|<=|=>|:).{0,5}['\"]([a-f0-9]{32})['\"]'''
     tags = ["key", "Facebook"]
 
 [[rules]]
-    description = "Facebook Client ID"
-    regex = '''(?i)(facebook|fb)(.{0,20})?['\"][0-9]{13,17}['\"]'''
-    tags = ["key", "Facebook"]
-
-[[rules]]
-    description = "Twitter Secret Key"
-    regex = '''(?i)twitter(.{0,20})?['\"][0-9a-z]{35,44}['\"]'''
+    description = "Twitter Token"
+    regex = '''(?i)(twitter[a-z0-9_ .\-,]{0,25})(=|>|:=|\|\|:|<=|=>|:).{0,5}['\"]([a-f0-9]{35,44})['\"]'''
     tags = ["key", "Twitter"]
-
-[[rules]]
-    description = "Twitter Client ID"
-    regex = '''(?i)twitter(.{0,20})?['\"][0-9a-z]{18,25}['\"]'''
-    tags = ["client", "Twitter"]
 
 [[rules]]
     description = "Github Personal Access Token"
     regex = '''ghp_[0-9a-zA-Z]{36}'''
     tags = ["key", "Github"]
+
 [[rules]]
     description = "Github OAuth Access Token"
     regex = '''gho_[0-9a-zA-Z]{36}'''
     tags = ["key", "Github"]
+
 [[rules]]
     description = "Github App Token"
     regex = '''(ghu|ghs)_[0-9a-zA-Z]{36}'''
     tags = ["key", "Github"]
+
 [[rules]]
     description = "Github Refresh Token"
     regex = '''ghr_[0-9a-zA-Z]{76}'''
     tags = ["key", "Github"]
 
 [[rules]]
-    description = "LinkedIn Client ID"
-    regex = '''(?i)linkedin(.{0,20})?(?-i)[0-9a-z]{12}'''
-    tags = ["client", "LinkedIn"]
+    description = "Linkedin Client Secret"
+    regex = '''(?i)(linkedin[a-z0-9_ .\-,]{0,25})(=|>|:=|\|\|:|<=|=>|:).{0,5}['\"]([a-z]{16})['\"]'''
+    tags = ["key", "LinkedIn"]
 
 [[rules]]
-    description = "LinkedIn Secret Key"
-    regex = '''(?i)linkedin(.{0,20})?[0-9a-z]{16}'''
-    tags = ["secret", "LinkedIn"]
+    description = "Linkedin Client ID"
+    regex = '''(?i)(linkedin[a-z0-9_ .\-,]{0,25})(=|>|:=|\|\|:|<=|=>|:).{0,5}['\"]([a-z0-9]{14})['\"]'''
+    tags = ["key", "LinkedIn"]
 
 [[rules]]
-    description = "Slack"
+    description = "Slack Token"
     regex = '''xox[baprs]-([0-9a-zA-Z]{10,48})?'''
     tags = ["key", "Slack"]
 
 [[rules]]
-    description = "Asymmetric Private Key"
-    regex = '''-----BEGIN ((EC|PGP|DSA|RSA|OPENSSH) )?PRIVATE KEY( BLOCK)?-----'''
+    description = "Slack Webhook"
+    regex = '''https://hooks.slack.com/services/T[a-zA-Z0-9_]{8}/B[a-zA-Z0-9_]{8}/[a-zA-Z0-9_]{24}'''
+    tags = ["key", "Slack"]
+
+[[rules]]
+    description = "PKCS8 private key"
+    regex = '''-----BEGIN PRIVATE KEY-----'''
+    tags = ["key", "AsymmetricPrivateKey"]
+
+[[rules]]
+    description = "RSA private key"
+    regex = '''-----BEGIN RSA PRIVATE KEY-----'''
+    tags = ["key", "AsymmetricPrivateKey"]
+
+[[rules]]
+    description = "SSH private key"
+    regex = '''-----BEGIN OPENSSH PRIVATE KEY-----'''
+    tags = ["key", "AsymmetricPrivateKey"]
+
+[[rules]]
+    description = "PGP private key"
+    regex = '''-----BEGIN PGP PRIVATE KEY BLOCK-----'''
+    tags = ["key", "AsymmetricPrivateKey"]
+
+[[rules]]
+    description = "SSH (DSA) private key"
+    regex = '''-----BEGIN DSA PRIVATE KEY-----'''
+    tags = ["key", "AsymmetricPrivateKey"]
+
+[[rules]]
+    description = "SSH (EC) private key"
+    regex = '''-----BEGIN EC PRIVATE KEY-----'''
     tags = ["key", "AsymmetricPrivateKey"]
 
 [[rules]]
@@ -83,22 +102,32 @@ title = "gitleaks config"
 
 [[rules]]
     description = "Google (GCP) Service Account"
-    regex = '''"type": "service_account"'''
+    regex = '''\"type\": \"service_account\"'''
     tags = ["key", "Google"]
 
 [[rules]]
     description = "Heroku API key"
-    regex = '''(?i)heroku(.{0,20})?[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'''
+    regex = '''(?i)(heroku[a-z0-9_ .\-,]{0,25})(=|>|:=|\|\|:|<=|=>|:).{0,5}['\"]([0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12})['\"]'''
     tags = ["key", "Heroku"]
 
 [[rules]]
     description = "MailChimp API key"
-    regex = '''(?i)(mailchimp|mc)(.{0,20})?[0-9a-f]{32}-us[0-9]{1,2}'''
+    regex = '''(?i)(mailchimp[a-z0-9_ .\-,]{0,25})(=|>|:=|\|\|:|<=|=>|:).{0,5}['\"]([a-f0-9]{32}-us20)['\"]'''
     tags = ["key", "Mailchimp"]
 
 [[rules]]
-    description = "Mailgun API key"
-    regex = '''((?i)(mailgun|mg)(.{0,20})?)?key-[0-9a-z]{32}'''
+    description = "Mailgun private API token"
+    regex = '''(?i)(mailgun[a-z0-9_ .\-,]{0,25})(=|>|:=|\|\|:|<=|=>|:).{0,5}['\"](key-[a-f0-9]{32})['\"]'''
+    tags = ["key", "Mailgun"]
+
+[[rules]]
+    description = "Mailgun public validation key"
+    regex = '''(?i)(mailgun[a-z0-9_ .\-,]{0,25})(=|>|:=|\|\|:|<=|=>|:).{0,5}['\"](pubkey-[a-f0-9]{32})['\"]'''
+    tags = ["key", "Mailgun"]
+
+[[rules]]
+    description = "Mailgun webhook signing key"
+    regex = '''(?i)(mailgun[a-z0-9_ .\-,]{0,25})(=|>|:=|\|\|:|<=|=>|:).{0,5}['\"]([a-h0-9]{32}-[a-h0-9]{8}-[a-h0-9]{8})['\"]'''
     tags = ["key", "Mailgun"]
 
 [[rules]]
@@ -112,18 +141,13 @@ title = "gitleaks config"
     tags = ["key", "Picatic"]
 
 [[rules]]
-    description = "SendGrid API Key"
-    regex = '''SG\.[\w_]{16,32}\.[\w_]{16,64}'''
+    description = "SendGrid API Token"
+    regex = '''SG\.(?i)[a-z0-9_\-\.]{66}'''
     tags = ["key", "SendGrid"]
 
 [[rules]]
-    description = "Slack Webhook"
-    regex = '''https://hooks.slack.com/services/T[a-zA-Z0-9_]{8}/B[a-zA-Z0-9_]{8,12}/[a-zA-Z0-9_]{24}'''
-    tags = ["key", "slack"]
-
-[[rules]]
     description = "Stripe API key"
-    regex = '''(?i)stripe(.{0,20})?[sr]k_live_[0-9a-zA-Z]{24}'''
+    regex = '''(?i)(sk|pk)_(test|live)_[0-9a-z]{10,32}'''
     tags = ["key", "Stripe"]
 
 [[rules]]
@@ -138,12 +162,12 @@ title = "gitleaks config"
 
 [[rules]]
     description = "Twilio API key"
-    regex = '''(?i)twilio(.{0,20})?SK[0-9a-f]{32}'''
+    regex = '''SK[0-9a-fA-F]{32}'''
     tags = ["key", "twilio"]
 
 [[rules]]
-    description = "Dynatrace ttoken"
-    regex = '''dt0[a-zA-Z]{1}[0-9]{2}\.[A-Z0-9]{24}\.[A-Z0-9]{64}'''
+    description = "Dynatrace API Token"
+    regex = '''['\"]dt0c01\.(?i)[a-z0-9]{24}\.[a-z0-9]{64}['\"]'''
     tags = ["key", "Dynatrace"]
 
 [[rules]]
@@ -173,6 +197,8 @@ title = "gitleaks config"
 
 [allowlist]
     description = "Allowlisted files"
-    files = ['''^\.?gitleaks.toml$''',
-    '''(.*?)(png|jpg|gif|doc|docx|pdf|bin|xls|pyc|zip)$''',
-    '''(go.mod|go.sum)$''']
+    files = [
+        '''^\.?gitleaks.toml$''',
+        '''(.*?)(png|jpg|gif|doc|docx|pdf|bin|xls|pyc|zip|svg|socket)$''',
+        '''(go.mod|go.sum)$'''
+    ]
