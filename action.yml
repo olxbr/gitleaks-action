@@ -23,9 +23,9 @@ runs:
         if [ -z "${{ inputs.config_path }}" ]
         then
               echo -e "\n\nUSING CONFIG ${GITHUB_ACTION_PATH}/.gitleaks.toml"
-              ${GITHUB_ACTION_PATH}/entrypoint.sh ${GITHUB_ACTION_PATH}/.gitleaks.toml
+              ${GITHUB_ACTION_PATH}/entrypoint.sh ${GITHUB_ACTION_PATH}/.gitleaks.toml ${GITHUB_ACTION_PATH}/gitleaks-linux-amd64
         else
               echo -e "\n\nUSING CONFIG ${GITHUB_WORKSPACE}/${{ inputs.config_path }}/.gitleaks.toml"
-              ${GITHUB_ACTION_PATH}/entrypoint.sh ${GITHUB_WORKSPACE}/${{ inputs.config_path }}/.gitleaks.toml
+              ${GITHUB_ACTION_PATH}/entrypoint.sh ${GITHUB_WORKSPACE}/${{ inputs.config_path }}/.gitleaks.toml ${GITHUB_ACTION_PATH}/gitleaks-linux-amd64
         fi
       shell: bash
