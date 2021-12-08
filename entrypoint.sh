@@ -1,5 +1,6 @@
 #!/bin/bash
 
+GITLEAKS_BIN="$2"
 INPUT_CONFIG_PATH="$1"
 CONFIG=""
 
@@ -10,21 +11,19 @@ else
   echo -e "\nConfig not found in $INPUT_CONFIG_PATH... using default"  
 fi
 
-wget -q https://github.com/zricethezav/gitleaks/releases/download/v7.6.1/gitleaks-linux-amd64
-mv gitleaks-linux-amd64 gitleaks
-chmod +x gitleaks
+chmod +x $GITLEAKS_BIN
 
-echo -e "\nrunning gitleaks $(./gitleaks --version) ...\n"
+echo -e "\nrunning gitleaks $($GITLEAKS_BIN --version) ...\n"
 
 echo '[]' > gitleaks.json
 EXIT_CODE=3
 
 if [ "$GITHUB_EVENT_NAME" = "push" -o "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
-  GITLEAKS=$(./gitleaks --path=$GITHUB_WORKSPACE --report="gitleaks.json" --format=JSON --leaks-exit-code=2 --quiet --redact $CONFIG)
+  GITLEAKS=$($GITLEAKS_BIN --path=$GITHUB_WORKSPACE --report="gitleaks.json" --format=JSON --leaks-exit-code=2 --quiet --redact $CONFIG)
   EXIT_CODE=$?
 elif [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
   git --git-dir="$GITHUB_WORKSPACE/.git" log --left-right --cherry-pick --pretty=format:"%H" remotes/origin/$GITHUB_BASE_REF... >commit_list.txt
-  GITLEAKS=$(./gitleaks --path=$GITHUB_WORKSPACE --report="gitleaks.json" --format=JSON --leaks-exit-code=2 --quiet --redact --commits-file=commit_list.txt $CONFIG)
+  GITLEAKS=$($GITLEAKS_BIN --path=$GITHUB_WORKSPACE --report="gitleaks.json" --format=JSON --leaks-exit-code=2 --quiet --redact --commits-file=commit_list.txt $CONFIG)
   EXIT_CODE=$?
 fi
 
