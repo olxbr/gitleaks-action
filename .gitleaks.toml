@@ -200,6 +200,11 @@ title = "gitleaks config"
     regex = '''pypi-AgEIcHlwaS5vcmc[A-Za-z0-9-_]{50,1000}'''
     tags = ["key", "pypi"]
 
+[[rules]]
+    description = "Sentry Auth Token"
+    regex = '''auth\.token\=[A-Fa-f0-9]{64}'''
+    tags = ["key", "Sentry"]
+
 [allowlist]
     description = "Allowlisted files"
     files = [
