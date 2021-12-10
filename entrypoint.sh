@@ -23,6 +23,7 @@ if [ "$GITHUB_EVENT_NAME" = "push" -o "$GITHUB_EVENT_NAME" = "workflow_dispatch"
   EXIT_CODE=$?
 elif [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
   git --git-dir="$GITHUB_WORKSPACE/.git" log --left-right --cherry-pick --pretty=format:"%H" remotes/origin/$GITHUB_BASE_REF... >commit_list.txt
+  cat commit_list.txt
   GITLEAKS=$($GITLEAKS_BIN --debug --path=$GITHUB_WORKSPACE --report="gitleaks.json" --format=JSON --leaks-exit-code=2 --verbose --redact --commits-file=commit_list.txt $CONFIG)
   EXIT_CODE=$?
 fi
