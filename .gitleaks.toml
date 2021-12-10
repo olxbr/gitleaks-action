@@ -202,7 +202,7 @@ title = "gitleaks config"
 
 [[rules]]
     description = "Sentry Auth Token"
-    regex = '''auth\.token\=[A-Fa-f0-9]{64}'''
+    regex = '''auth\.token=[A-Fa-f0-9]{64}'''
     tags = ["key", "Sentry"]
 
 [allowlist]
