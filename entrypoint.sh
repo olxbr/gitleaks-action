@@ -22,7 +22,10 @@ if [ "$GITHUB_EVENT_NAME" = "push" -o "$GITHUB_EVENT_NAME" = "workflow_dispatch"
   GITLEAKS=$($GITLEAKS_BIN --path=$GITHUB_WORKSPACE --report="gitleaks.json" --format=JSON --leaks-exit-code=2 --quiet --redact $CONFIG)
   EXIT_CODE=$?
 elif [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
-  git --git-dir="$GITHUB_WORKSPACE/.git" log --left-right --cherry-pick --pretty=format:"%H" remotes/origin/$GITHUB_BASE_REF... >commit_list.txt
+  echo -e "Gitleaks will analyze the following commits..."
+  git --git-dir="$GITHUB_WORKSPACE/.git" log --pretty=format:"%H" remotes/origin/$GITHUB_BASE_REF.. >commit_list.txt
+  cat commit_list.txt
+  echo -e "\n...from now!\n"
   GITLEAKS=$($GITLEAKS_BIN --path=$GITHUB_WORKSPACE --report="gitleaks.json" --format=JSON --leaks-exit-code=2 --quiet --redact --commits-file=commit_list.txt $CONFIG)
   EXIT_CODE=$?
 fi
