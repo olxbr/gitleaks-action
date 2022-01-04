@@ -18,7 +18,7 @@ jobs:
       - name: Run checkout
         uses: actions/checkout@v2
         with:
-          fetch-depth: "0"
+          fetch-depth: 0
 
       - name: Run Gitleaks
         id: gitleaks
@@ -39,7 +39,7 @@ jobs:
       - name: Run checkout
         uses: actions/checkout@v2
         with:
-          fetch-depth: "0"
+          fetch-depth: 0
 
       - name: Run Gitleaks
         id: gitleaks
