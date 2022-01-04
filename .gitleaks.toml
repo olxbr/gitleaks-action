@@ -7,7 +7,7 @@ title = "gitleaks config"
 
 [[rules]]
     description = "AWS Access Key"
-    regex = '''AKIA[0-9A-Z]{16}'''
+    regex = '''\bAKIA[0-9A-Z]{16}\b'''
     tags = ["key", "AWS"]
 
 [[rules]]
