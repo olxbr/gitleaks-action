@@ -9,6 +9,9 @@ title = "gitleaks config"
     description = "AWS Access Key"
     regex = '''\bAKIA[0-9A-Z]{16}\b'''
     tags = ["key", "AWS"]
+    [rules.allowlist]
+        regexes = ['''AKIAIOSFODNN7EXAMPLE''']
+        description = "Ignore example key"
 
 [[rules]]
     description = "AWS MWS key"
