@@ -33,7 +33,7 @@ fi
 case $EXIT_CODE in
 0) echo -e "Your code is good to go!\n\n" ;;
 1) echo -e "Gitleaks execution fail!\n\n" ;;
-2) echo -e "Gitleaks encountered leaks!\n\n$(cat gitleaks.json)\n\n" ;;
+2) echo -e "Gitleaks encountered leaks!\n\n$(cat gitleaks.json | jq 'map({lineNumber, commit, rule, file, date, tags})')\n\n" ;;
 3) echo -e "Gitleaks not executed!\n\n" ;;
 *) echo -e "Exit code was $EXIT_CODE\n\n" ;;
 esac
