@@ -10,7 +10,7 @@ title = "gitleaks config"
     regex = '''\bAKIA[0-9A-Z]{16}\b'''
     tags = ["key", "AWS"]
     [rules.allowlist]
-        regexes = ['''AKIAIOSFODNN7EXAMPLE''']
+        regexes = ['''AKIA[0-9A-Z]{9}EXAMPLE''']
         description = "Ignore example key"
 
 [[rules]]
