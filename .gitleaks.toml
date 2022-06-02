@@ -103,9 +103,10 @@ title = "gitleaks config"
     regex = '''[\'\" ]AIza[0-9A-Za-z\-_]{35}'''
     tags = ["key", "Google"]
     [rules.allowlist]
-        description = "Ignore Firebase config files For Apple apps"
+        description = "Ignore Firebase config files"
         files = [
-            '''(GoogleService-Info.plist)$'''
+            '''(GoogleService-Info.plist)$''',
+            '''(google-services.json)$'''
         ]
 
 [[rules]]
