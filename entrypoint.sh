@@ -38,7 +38,7 @@ case $EXIT_CODE in
 *) echo -e "Exit code was $EXIT_CODE\n\n" ;;
 esac
 
-echo "::set-output name=exit_code::$EXIT_CODE"
-echo "::set-output name=result::$(jq -c . < gitleaks.json | sed 's/\x27/`/g')"
+echo "exit_code=$EXIT_CODE" >> $GITHUB_OUTPUT
+echo "result=$(jq -c . < gitleaks.json | sed 's/\x27/`/g')" >> $GITHUB_OUTPUT
 
 rm -rf gitleaks gitleaks.json
